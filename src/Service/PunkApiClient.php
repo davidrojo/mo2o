@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\Exception\PunkApiException;
 use App\Factory\BeerFactory;
 use App\Repository\BeerRepository;
 use Exception;
@@ -29,7 +28,7 @@ class PunkApiClient implements BeerRepository
     }
 
     public function searchByFood($food, $page = 1, $rpp = self::RPP){
-        $list = $this->request($this->punkApiBaseUrl.'/beers', [
+        $list = $this->request('/beers', [
             'query' => [
                 'food' => $food,
                 'page' => $page,
@@ -39,6 +38,19 @@ class PunkApiClient implements BeerRepository
 
         return array_map(function($array) { return BeerFactory::createFromArray($array); }, $list);
     }
+
+    public function findOneById($id)
+    {
+        $beer = $this->request('/beers/'.$id);
+        // Punk api returns an array of items when requesting a single item, so
+        // we check that the result contains exactly one item
+        if ($beer && is_array($beer) && count($beer) == 1){
+            return BeerFactory::createFromArray($beer[0]);
+        }
+
+        return null;
+    }
+
 
     /**
      * Encapsulates the api request to handle errors and return the response in array format
@@ -53,18 +65,21 @@ class PunkApiClient implements BeerRepository
      * @throws TransportExceptionInterface
      * @throws Exception
      */
-    private function request($path, $params){
+    private function request($path, $params = []){
         try{
-            $response = $this->client->request('GET', $path, $params);
+            $response = $this->client->request('GET', $this->punkApiBaseUrl.$path, $params);
 
-            if($response->getStatusCode() != Response::HTTP_OK){
-                throw new Exception('Error retrieving data');
+            if ($response->getStatusCode() == Response::HTTP_NOT_FOUND){
+                return null;
+            }
+            if($response->getStatusCode() == Response::HTTP_OK){
+                return $response->toArray();
             }
 
-            return $response->toArray();
+            throw new Exception('Error retrieving data');
         }
         catch (Exception $e){
-            throw new Exception('Error retrieving data');
+            throw new Exception('Error retrieving data 2');
         }
     }
 }

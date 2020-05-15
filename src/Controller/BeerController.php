@@ -3,15 +3,12 @@
 namespace App\Controller;
 
 use App\Repository\BeerRepository;
-use App\Service\PunkApiClient;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BeerController extends AbstractFOSRestController implements ClassResourceInterface
 {
@@ -42,9 +39,16 @@ class BeerController extends AbstractFOSRestController implements ClassResourceI
     }
 
     /**
-     * @Rest\View(serializerGroups={"list"})
+     * @Rest\View(serializerGroups={"details"})
+     * @param $id
+     * @return null
      */
     public function getAction($id){
+        $beer = $this->repository->findOneById($id);
+        if (!$beer){
+            throw new NotFoundHttpException('No beer found with the id '.$id);
+        }
 
+        return $beer;
     }
 }
