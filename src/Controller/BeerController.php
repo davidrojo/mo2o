@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\BeerRepository;
 use App\Service\PunkApiClient;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -14,13 +15,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class BeerController extends AbstractFOSRestController implements ClassResourceInterface
 {
-    /** @var PunkApiClient */
-    private $api;
+    /** @var BeerRepository */
+    private $repository;
 
 
-    public function __construct(PunkApiClient $api)
+    public function __construct(BeerRepository $repository)
     {
-        $this->api = $api;
+        $this->repository = $repository;
     }
 
     /**
@@ -32,7 +33,7 @@ class BeerController extends AbstractFOSRestController implements ClassResourceI
             throw new BadRequestHttpException('You must provide a query to search');
         }
 
-        return $this->api->searchByFood($query);
+        return $this->repository->searchByFood($query);
     }
 
     /**
