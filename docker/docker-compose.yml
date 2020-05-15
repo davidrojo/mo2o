@@ -1,0 +1,21 @@
+version: '2'
+
+services:
+  # Main nginx server, it will be shared between instances
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ../:/app:cached
+      - ./settings/nginx.conf:/etc/nginx/conf.d/default.conf
+    container_name: nginx
+
+  # PHP server
+  php:
+    build: images/php-symfony
+    volumes:
+      - ../:/app:cached
+      - ./settings/php.ini:/usr/local/etc/php/conf.d/myphp.ini
+    working_dir: /app
+    container_name: php
