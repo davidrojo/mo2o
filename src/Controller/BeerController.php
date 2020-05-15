@@ -3,18 +3,20 @@
 namespace App\Controller;
 
 use App\Service\PunkApiClient;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\Routing\ClassResourceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/api/beers")
- */
-class BeerController extends AbstractController
+class BeerController extends AbstractFOSRestController implements ClassResourceInterface
 {
     /** @var PunkApiClient */
     private $api;
+
 
     public function __construct(PunkApiClient $api)
     {
@@ -22,7 +24,7 @@ class BeerController extends AbstractController
     }
 
     /**
-     * @Route("/search", name="api_beer_search")
+     * @Rest\View(serializerGroups={"list"})
      */
     public function searchAction(Request $request){
         $query = $request->get('query', null);
@@ -30,7 +32,13 @@ class BeerController extends AbstractController
             throw new BadRequestHttpException('You must provide a query to search');
         }
 
-        $r = $this->api->searchByFood($query);
-        dd($r);
+        return $this->api->searchByFood($query);
+    }
+
+    /**
+     * @Rest\View(serializerGroups={"list"})
+     */
+    public function getAction($id){
+
     }
 }

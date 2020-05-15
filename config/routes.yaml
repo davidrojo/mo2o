@@ -1,3 +1,4 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+api_beer:
+  type: rest
+  prefix: api/
+  resource: App\Controller\BeerController

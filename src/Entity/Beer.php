@@ -2,35 +2,43 @@
 
 namespace App\Entity;
 
+use JMS\Serializer\Annotation\Groups;
+
 class Beer
 {
     /**
      * @var int
+     * @Groups({"list", "details"})
      */
     private $id;
 
     /**
      * @var string
+     * @Groups({"list", "details"})
      */
     private $name;
 
     /**
      * @var string
+     * @Groups({"list", "details"})
      */
     private $description;
 
     /**
      * @var string
+     * @Groups({"details"})
      */
     private $imageUrl;
 
     /**
      * @var string
+     * @Groups({"details"})
      */
     private $tagline;
 
     /**
      * @var string
+     * @Groups({"details"})
      */
     private $firstBrewed;
 
