@@ -33,7 +33,12 @@ class BeerController extends AbstractFOSRestController implements ClassResourceI
             throw new BadRequestHttpException('You must provide a query to search');
         }
 
-        return $this->repository->searchByFood($query);
+        $page = intval($request->get('page', 1));
+        if (!filter_var($page, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])){
+            throw new BadRequestHttpException('Page parameter must be a positive integer');
+        }
+
+        return $this->repository->searchByFood($query, $page);
     }
 
     /**
