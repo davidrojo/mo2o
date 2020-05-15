@@ -16,6 +16,12 @@ Ejecutar los contenedores de docker
 cd docker && docker-compose build && docker-compose up -d
 ```
 
+Instalar las dependencias
+
+```
+docker exec php composer install
+```
+
 ## Ejecución
 
 La aplicación ofrece 2 urls para acceder a los servicios desarrollados.
@@ -46,4 +52,4 @@ curl http://localhost/api/beers/5
 
 - Se ha utilizado FOSRestBundle para el desarrollo de la API RESTful
 - Se ha utilizado JMSSerializer para la serialización de entidades
-- Existen unos tests unitarios basicos. Ejecutar `docker exec -it php bin/phpunit`
+- Existen unos tests unitarios basicos. Ejecutar `docker exec php bin/phpunit`
